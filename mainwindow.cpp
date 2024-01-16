@@ -25,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openClicked()));
     QObject::connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveClicked()));
     QObject::connect(ui->startButton, SIGNAL(clicked()), this, SLOT(startClicked()));
+    QObject::connect(ui->fullscreenButton, SIGNAL(clicked()), this, SLOT(fullscreenClicked()));
     QObject::connect(ui->edgetracingCheckbox, SIGNAL(stateChanged(int)), this, SLOT(uncheckOther()));
     QObject::connect(ui->greyscaleCheckbox, SIGNAL(stateChanged(int)), this, SLOT(uncheckOther()));
 }
@@ -54,13 +55,27 @@ void MainWindow::startClicked()
 //        ui->textBrowser->setPlainText(m_image->getASCII());
     } else if (ui->greyscaleCheckbox->isChecked()) {
         qDebug() << ui->textBrowser->width() << ui->textBrowser->height();
+        qDebug() << m_image->getImage().width() << m_image->getImage().height();
+        QFont font("Consolas");
+        QFontMetrics metrics(font);
+        m_image->scaleImage(ui->textBrowser->width(),
+                            ui->textBrowser->height(),
+                            metrics.horizontalAdvance("@"),
+                            metrics.height());
+        qDebug() << m_image->getImage().width() << m_image->getImage().height();
         m_image->greyscaleAlgo();
-        QFont f("Consolas");
-        ui->textBrowser->setFont(f);
+//        qDebug() << mf.horizontalAdvance("@") << mf.height();
+        ui->textBrowser->setFont(font);
+        ui->textBrowser->zoomOut(9);
         ui->textBrowser->setText(m_image->getASCII());
     } else {
         errmsg->showMessage("Choose the drawing algorithm");
     }
+}
+
+void MainWindow::fullscreenClicked()
+{
+
 }
 
 void MainWindow::openClicked()
@@ -68,7 +83,7 @@ void MainWindow::openClicked()
     const char filter[] = "Image Files (*.png *.jpg *.jpeg *.bmp);;All files(*.*)";
     QString name = QFileDialog::getOpenFileName(this,
                                                 tr("Open Image"),
-                                                "/home",
+                                                "/home/fomka/Downloads",
                                                 tr(filter));
     if (name.isNull()) {
         return;

@@ -11,6 +11,12 @@ ImageProcessor::ImageProcessor()
     m_unredacted_image = new QImage();
 }
 
+ImageProcessor::~ImageProcessor()
+{
+    delete m_image;
+    delete m_unredacted_image;
+}
+
 QString ImageProcessor::getFilename()
 {
     return m_filename;
@@ -35,9 +41,17 @@ void ImageProcessor::setImage(QImage image)
 {
     *m_unredacted_image = image;
     *m_image = image.convertToFormat(QImage::Format_Grayscale16);
-//    *m_image = image;
-//    *m_image = m_image->scaled(m_image->width()/2, m_image->height()/2, Qt::KeepAspectRatio);
-    *m_image = m_image->scaled(300, 300, Qt::KeepAspectRatio);
+}
+
+void ImageProcessor::scaleImage(int width, int height, int fontWidth, int fontHeight)
+{
+    if (m_image->width() > width) {
+        *m_image = m_image->scaled(width, m_image->height());
+    }
+    if (m_image->height() > height) {
+        *m_image = m_image->scaled(m_image->width(), height);
+    }
+    *m_image = m_image->scaled(width/fontWidth, height/fontHeight);
 }
 
 QString ImageProcessor::getASCII()

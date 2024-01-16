@@ -8,11 +8,13 @@ class ImageProcessor : public QImage
 {
 public:
     ImageProcessor();
+    ~ImageProcessor();
     QString getFilename();
     void setFilename(QString filename);
     QImage getImage();
     QImage getUnredactedImage();
     void setImage(QImage image);
+    void scaleImage(int width, int height, int fontWidth, int fontHeight);
     QString getASCII();
     void clearASCII();
 
