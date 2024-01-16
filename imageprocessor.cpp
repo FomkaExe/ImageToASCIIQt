@@ -38,6 +38,7 @@ void ImageProcessor::setImage(QImage image)
 //    *m_image = image;
 //    *m_image = m_image->scaled(m_image->width()/2, m_image->height()/2, Qt::KeepAspectRatio);
     *m_image = m_image->scaled(300, 300, Qt::KeepAspectRatio);
+    m_image->save("/home/Fomka/Downloads/ScaledBaka");
 }
 
 QString ImageProcessor::getASCII()
