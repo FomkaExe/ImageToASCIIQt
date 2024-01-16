@@ -11,8 +11,10 @@ public:
     QString getFilename();
     void setFilename(QString filename);
     QImage getImage();
+    QImage getUnredactedImage();
     void setImage(QImage image);
     QString getASCII();
+    void clearASCII();
 
 public slots:
     void greyscaleAlgo();
@@ -20,6 +22,7 @@ public slots:
 
 private:
     QImage *m_image;
+    QImage *m_unredacted_image;
     QString m_filename;
     QString m_ASCII;
 };

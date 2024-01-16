@@ -31,6 +31,9 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    delete m_image;
+    delete m_scene;
+    delete errmsg;
     delete ui;
 }
 
@@ -42,15 +45,19 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 
 void MainWindow::startClicked()
 {
+    if (!m_image->getASCII().isNull()) {
+        m_image->clearASCII();
+    }
     if (ui->edgetracingCheckbox->isChecked()) {
         errmsg->showMessage("Not working right now, sorry! Check again later");
 //        m_image->edgetracingAlgo();
 //        ui->textBrowser->setPlainText(m_image->getASCII());
     } else if (ui->greyscaleCheckbox->isChecked()) {
+        qDebug() << ui->textBrowser->width() << ui->textBrowser->height();
         m_image->greyscaleAlgo();
-        qDebug() << m_image->getASCII();
-        ui->textBrowser->setPlainText(m_image->getASCII());
-        ui->textBrowser->show();
+        QFont f("Consolas");
+        ui->textBrowser->setFont(f);
+        ui->textBrowser->setText(m_image->getASCII());
     } else {
         errmsg->showMessage("Choose the drawing algorithm");
     }
@@ -69,7 +76,8 @@ void MainWindow::openClicked()
     m_image->setFilename(name);
     m_image->setImage(QImage(name));
     m_scene->clear();
-    m_scene->addPixmap(QPixmap::fromImage(m_image->getImage()));
+    ui->textBrowser->clear();
+    m_scene->addPixmap(QPixmap::fromImage(m_image->getUnredactedImage()));
     ui->graphicsView->fitInView(m_scene->itemsBoundingRect(), Qt::KeepAspectRatio);
 }
 
@@ -86,6 +94,10 @@ void MainWindow::saveClicked()
                                                 tr(filter));
 
     QFile file(filename);
+    if (!file.open(QIODevice::WriteOnly)) {
+        errmsg->showMessage("Error writing to file, try again");
+        return;
+    }
     file.write(m_image->getASCII().toUtf8()); // will it work?????????????????
 }
 
