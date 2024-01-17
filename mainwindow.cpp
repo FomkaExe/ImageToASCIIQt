@@ -49,25 +49,18 @@ void MainWindow::startClicked()
     if (!m_image->getASCII().isNull()) {
         m_image->clearASCII();
     }
-    if (ui->edgetracingCheckbox->isChecked()) {
-        errmsg->showMessage("Not working right now, sorry! Check again later");
-//        m_image->edgetracingAlgo();
-//        ui->textBrowser->setPlainText(m_image->getASCII());
-    } else if (ui->greyscaleCheckbox->isChecked()) {
+    if (ui->greyscaleCheckbox->isChecked()) {
         qDebug() << ui->textBrowser->width() << ui->textBrowser->height();
-        qDebug() << m_image->getImage().width() << m_image->getImage().height();
+
         QFont font("Consolas");
-        QFontMetrics metrics(font);
-        m_image->scaleImage(ui->textBrowser->width(),
-                            ui->textBrowser->height(),
-                            metrics.horizontalAdvance("@"),
-                            metrics.height());
-        qDebug() << m_image->getImage().width() << m_image->getImage().height();
-        m_image->greyscaleAlgo();
-//        qDebug() << mf.horizontalAdvance("@") << mf.height();
+        m_image->greyscaleAlgo(true,
+                               ui->textBrowser->width(),
+                               ui->textBrowser->height());
         ui->textBrowser->setFont(font);
         ui->textBrowser->zoomOut(9);
-        ui->textBrowser->setText(m_image->getASCII());
+        ui->textBrowser->setText(m_image->getLowresASCII());
+    } else if (ui->edgetracingCheckbox->isChecked()) {
+        errmsg->showMessage("Not working right now, sorry! Check again later");
     } else {
         errmsg->showMessage("Choose the drawing algorithm");
     }
@@ -75,7 +68,15 @@ void MainWindow::startClicked()
 
 void MainWindow::fullscreenClicked()
 {
-
+    QTextBrowser *text = new QTextBrowser();
+    QFont font("Consolas");
+    text->setFont(font);
+    if (m_image->getASCII().isNull()) {
+        m_image->greyscaleAlgo(false);
+    }
+    text->zoomOut(9);
+    text->setText(m_image->getASCII());
+    text->showMaximized();
 }
 
 void MainWindow::openClicked()
@@ -88,11 +89,12 @@ void MainWindow::openClicked()
     if (name.isNull()) {
         return;
     }
+    m_image->clearASCII();
     m_image->setFilename(name);
     m_image->setImage(QImage(name));
     m_scene->clear();
     ui->textBrowser->clear();
-    m_scene->addPixmap(QPixmap::fromImage(m_image->getUnredactedImage()));
+    m_scene->addPixmap(QPixmap::fromImage(m_image->getImage()));
     ui->graphicsView->fitInView(m_scene->itemsBoundingRect(), Qt::KeepAspectRatio);
 }
 
