@@ -25,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openClicked()));
     QObject::connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveClicked()));
     QObject::connect(ui->startButton, SIGNAL(clicked()), this, SLOT(startClicked()));
+    QObject::connect(ui->fullscreenButton, SIGNAL(clicked()), this, SLOT(fullscreenClicked()));
     QObject::connect(ui->edgetracingCheckbox, SIGNAL(stateChanged(int)), this, SLOT(uncheckOther()));
     QObject::connect(ui->greyscaleCheckbox, SIGNAL(stateChanged(int)), this, SLOT(uncheckOther()));
 }
@@ -48,19 +49,34 @@ void MainWindow::startClicked()
     if (!m_image->getASCII().isNull()) {
         m_image->clearASCII();
     }
-    if (ui->edgetracingCheckbox->isChecked()) {
-        errmsg->showMessage("Not working right now, sorry! Check again later");
-//        m_image->edgetracingAlgo();
-//        ui->textBrowser->setPlainText(m_image->getASCII());
-    } else if (ui->greyscaleCheckbox->isChecked()) {
+    if (ui->greyscaleCheckbox->isChecked()) {
         qDebug() << ui->textBrowser->width() << ui->textBrowser->height();
-        m_image->greyscaleAlgo();
-        QFont f("Consolas");
-        ui->textBrowser->setFont(f);
-        ui->textBrowser->setText(m_image->getASCII());
+
+        QFont font("Consolas");
+        m_image->greyscaleAlgo(true,
+                               ui->textBrowser->width(),
+                               ui->textBrowser->height());
+        ui->textBrowser->setFont(font);
+        ui->textBrowser->zoomOut(9);
+        ui->textBrowser->setText(m_image->getLowresASCII());
+    } else if (ui->edgetracingCheckbox->isChecked()) {
+        errmsg->showMessage("Not working right now, sorry! Check again later");
     } else {
         errmsg->showMessage("Choose the drawing algorithm");
     }
+}
+
+void MainWindow::fullscreenClicked()
+{
+    QTextBrowser *text = new QTextBrowser();
+    QFont font("Consolas");
+    text->setFont(font);
+    if (m_image->getASCII().isNull()) {
+        m_image->greyscaleAlgo(false);
+    }
+    text->zoomOut(9);
+    text->setText(m_image->getASCII());
+    text->showMaximized();
 }
 
 void MainWindow::openClicked()
@@ -68,16 +84,17 @@ void MainWindow::openClicked()
     const char filter[] = "Image Files (*.png *.jpg *.jpeg *.bmp);;All files(*.*)";
     QString name = QFileDialog::getOpenFileName(this,
                                                 tr("Open Image"),
-                                                "/home",
+                                                "/home/fomka/Downloads",
                                                 tr(filter));
     if (name.isNull()) {
         return;
     }
+    m_image->clearASCII();
     m_image->setFilename(name);
     m_image->setImage(QImage(name));
     m_scene->clear();
     ui->textBrowser->clear();
-    m_scene->addPixmap(QPixmap::fromImage(m_image->getUnredactedImage()));
+    m_scene->addPixmap(QPixmap::fromImage(m_image->getImage()));
     ui->graphicsView->fitInView(m_scene->itemsBoundingRect(), Qt::KeepAspectRatio);
 }
 

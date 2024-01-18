@@ -24,6 +24,7 @@ public:
 
 public slots:
     void startClicked();
+    void fullscreenClicked();
     void openClicked();
     void saveClicked();
     void uncheckOther();

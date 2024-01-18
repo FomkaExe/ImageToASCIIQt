@@ -25,6 +25,13 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="fullscreenButton">
+        <property name="text">
+         <string>Fullscreen</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QCheckBox" name="greyscaleCheckbox">
         <property name="text">
          <string>Greyscale</string>

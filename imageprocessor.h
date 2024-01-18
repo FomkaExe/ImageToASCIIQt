@@ -8,23 +8,24 @@ class ImageProcessor : public QImage
 {
 public:
     ImageProcessor();
-    QString getFilename();
+    ~ImageProcessor();
+    const QString getFilename();
     void setFilename(QString filename);
-    QImage getImage();
-    QImage getUnredactedImage();
+    const QImage getImage();
     void setImage(QImage image);
-    QString getASCII();
+    const QString getASCII();
+    const QString getLowresASCII();
     void clearASCII();
 
 public slots:
-    void greyscaleAlgo();
+    void greyscaleAlgo(bool lowres, int width = 0, int height = 0);
     void edgetracingAlgo();
 
 private:
     QImage *m_image;
-    QImage *m_unredacted_image;
     QString m_filename;
     QString m_ASCII;
+    QString m_lowres_ASCII;
 };
 
 #endif // IMAGEPROCESSOR_H
