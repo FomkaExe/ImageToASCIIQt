@@ -19,7 +19,6 @@ public:
 
 public slots:
     void greyscaleAlgo(bool lowres, int width = 0, int height = 0);
-    void edgetracingAlgo();
 
 private:
     QImage *m_image;

@@ -22,6 +22,8 @@ MainWindow::MainWindow(QWidget *parent)
     errmsg = new QErrorMessage(this);
 
     ui->graphicsView->setScene(m_scene);
+    ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     QObject::connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openClicked()));
     QObject::connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveClicked()));
@@ -49,8 +51,6 @@ void MainWindow::startClicked()
     if (!m_image->getASCII().isNull()) {
         m_image->clearASCII();
     }
-    qDebug() << ui->textBrowser->width() << ui->textBrowser->height();
-
     QFont font("Consolas");
     m_image->greyscaleAlgo(true,
                            ui->textBrowser->width(),
@@ -94,7 +94,7 @@ void MainWindow::openClicked()
 
 void MainWindow::saveClicked()
 {
-    if (m_image->getASCII().isEmpty()) {
+    if (m_image->getLowresASCII().isEmpty()) {
         errmsg->showMessage("Error! No ASCII generated");
         return;
     }
@@ -109,7 +109,7 @@ void MainWindow::saveClicked()
         errmsg->showMessage("Error writing to file, try again");
         return;
     }
-    file.write(m_image->getASCII().toUtf8());
+    file.write(m_image->getLowresASCII().toUtf8());
 }
 
 void MainWindow::aboutQtClicked()

@@ -31,20 +31,6 @@
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QCheckBox" name="greyscaleCheckbox">
-        <property name="text">
-         <string>Greyscale</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="edgetracingCheckbox">
-        <property name="text">
-         <string>Edge-tracing</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </item>
     <item row="1" column="0">

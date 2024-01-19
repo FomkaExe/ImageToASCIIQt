@@ -27,7 +27,6 @@ public slots:
     void fullscreenClicked();
     void openClicked();
     void saveClicked();
-    void uncheckOther();
     void aboutQtClicked();
 
 private:
