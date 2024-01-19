@@ -8,6 +8,7 @@
 #include <QDebug>
 #include <QPixmap>
 #include <QErrorMessage>
+#include <QMessageBox>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -15,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
+    this->setWindowTitle("Image to ASCII converter");
     m_image = new ImageProcessor();
     m_scene = new QGraphicsScene();
     errmsg = new QErrorMessage(this);
@@ -24,10 +25,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     QObject::connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openClicked()));
     QObject::connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveClicked()));
+    QObject::connect(ui->actionAbout_Qt, SIGNAL(triggered()), this, SLOT(aboutQtClicked()));
     QObject::connect(ui->startButton, SIGNAL(clicked()), this, SLOT(startClicked()));
     QObject::connect(ui->fullscreenButton, SIGNAL(clicked()), this, SLOT(fullscreenClicked()));
-    QObject::connect(ui->edgetracingCheckbox, SIGNAL(stateChanged(int)), this, SLOT(uncheckOther()));
-    QObject::connect(ui->greyscaleCheckbox, SIGNAL(stateChanged(int)), this, SLOT(uncheckOther()));
 }
 
 MainWindow::~MainWindow()
@@ -49,21 +49,15 @@ void MainWindow::startClicked()
     if (!m_image->getASCII().isNull()) {
         m_image->clearASCII();
     }
-    if (ui->greyscaleCheckbox->isChecked()) {
-        qDebug() << ui->textBrowser->width() << ui->textBrowser->height();
+    qDebug() << ui->textBrowser->width() << ui->textBrowser->height();
 
-        QFont font("Consolas");
-        m_image->greyscaleAlgo(true,
-                               ui->textBrowser->width(),
-                               ui->textBrowser->height());
-        ui->textBrowser->setFont(font);
-        ui->textBrowser->zoomOut(9);
-        ui->textBrowser->setText(m_image->getLowresASCII());
-    } else if (ui->edgetracingCheckbox->isChecked()) {
-        errmsg->showMessage("Not working right now, sorry! Check again later");
-    } else {
-        errmsg->showMessage("Choose the drawing algorithm");
-    }
+    QFont font("Consolas");
+    m_image->greyscaleAlgo(true,
+                           ui->textBrowser->width(),
+                           ui->textBrowser->height());
+    ui->textBrowser->setFont(font);
+    ui->textBrowser->zoomOut(9);
+    ui->textBrowser->setText(m_image->getLowresASCII());
 }
 
 void MainWindow::fullscreenClicked()
@@ -115,15 +109,10 @@ void MainWindow::saveClicked()
         errmsg->showMessage("Error writing to file, try again");
         return;
     }
-    file.write(m_image->getASCII().toUtf8()); // will it work?????????????????
+    file.write(m_image->getASCII().toUtf8());
 }
 
-void MainWindow::uncheckOther()
+void MainWindow::aboutQtClicked()
 {
-    if (sender() == ui->edgetracingCheckbox && ui->edgetracingCheckbox->isChecked()) {
-        ui->greyscaleCheckbox->setChecked(false);
-    }
-    if (sender() == ui->greyscaleCheckbox && ui->greyscaleCheckbox->isChecked()) {
-        ui->edgetracingCheckbox->setChecked(false);
-    }
+    QMessageBox::aboutQt(this);
 }

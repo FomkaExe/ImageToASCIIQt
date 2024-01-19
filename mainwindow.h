@@ -28,6 +28,7 @@ public slots:
     void openClicked();
     void saveClicked();
     void uncheckOther();
+    void aboutQtClicked();
 
 private:
     Ui::MainWindow *ui;
