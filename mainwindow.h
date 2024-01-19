@@ -4,22 +4,21 @@
 #include <QMainWindow>
 #include <QObject>
 
-class QPushButton;
 class ImageProcessor;
 class QGraphicsScene;
-class QErrorMessage;
+class QTextBrowser;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
     void resizeEvent(QResizeEvent* event);
 
 public slots:
@@ -33,6 +32,6 @@ private:
     Ui::MainWindow *ui;
     ImageProcessor *m_image;
     QGraphicsScene *m_scene;
-    QErrorMessage *errmsg;
+    QTextBrowser *m_textbrowser;
 };
 #endif // MAINWINDOW_H

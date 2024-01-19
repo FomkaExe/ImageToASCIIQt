@@ -4,15 +4,15 @@
 #include <QImage>
 #include <QObject>
 
-class ImageProcessor : public QImage
-{
+class ImageProcessor : public QImage {
 public:
     ImageProcessor();
     ~ImageProcessor();
+
     const QString getFilename();
-    void setFilename(QString filename);
+    void setFilename(const QString& filename);
     const QImage getImage();
-    void setImage(QImage image);
+    void setImage(const QImage& image);
     const QString getASCII();
     const QString getLowresASCII();
     void clearASCII();

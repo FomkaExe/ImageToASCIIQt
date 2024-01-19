@@ -4,22 +4,20 @@
 
 #include <QFileDialog>
 #include <QObject>
-#include <QAction>
-#include <QDebug>
 #include <QPixmap>
 #include <QErrorMessage>
 #include <QMessageBox>
 
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
-{
+MainWindow::MainWindow(QWidget *parent):
+    QMainWindow(parent),
+    ui(new Ui::MainWindow) {
     ui->setupUi(this);
-    this->setWindowTitle("Image to ASCII converter");
     m_image = new ImageProcessor();
     m_scene = new QGraphicsScene();
-    errmsg = new QErrorMessage(this);
+    m_textbrowser = new QTextBrowser();
+
+    this->setWindowTitle("Image to ASCII converter");
 
     ui->graphicsView->setScene(m_scene);
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -32,23 +30,20 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(ui->fullscreenButton, SIGNAL(clicked()), this, SLOT(fullscreenClicked()));
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
     delete m_image;
     delete m_scene;
-    delete errmsg;
+    delete m_textbrowser;
     delete ui;
 }
 
-void MainWindow::resizeEvent(QResizeEvent *event)
-{
+void MainWindow::resizeEvent(QResizeEvent *event) {
     QMainWindow::resizeEvent(event);
     ui->graphicsView->fitInView(m_scene->itemsBoundingRect(), Qt::KeepAspectRatio);
 }
 
-void MainWindow::startClicked()
-{
-    if (!m_image->getASCII().isNull()) {
+void MainWindow::startClicked() {
+    if (!m_image->getLowresASCII().isNull()) {
         m_image->clearASCII();
     }
     QFont font("Consolas");
@@ -60,21 +55,18 @@ void MainWindow::startClicked()
     ui->textBrowser->setText(m_image->getLowresASCII());
 }
 
-void MainWindow::fullscreenClicked()
-{
-    QTextBrowser *text = new QTextBrowser();
+void MainWindow::fullscreenClicked() {
     QFont font("Consolas");
-    text->setFont(font);
+    m_textbrowser->setFont(font);
     if (m_image->getASCII().isNull()) {
         m_image->greyscaleAlgo(false);
     }
-    text->zoomOut(9);
-    text->setText(m_image->getASCII());
-    text->showMaximized();
+    m_textbrowser->zoomOut(9);
+    m_textbrowser->setText(m_image->getASCII());
+    m_textbrowser->showMaximized();
 }
 
-void MainWindow::openClicked()
-{
+void MainWindow::openClicked() {
     const char filter[] = "Image Files (*.png *.jpg *.jpeg *.bmp);;All files(*.*)";
     QString name = QFileDialog::getOpenFileName(this,
                                                 tr("Open Image"),
@@ -92,10 +84,11 @@ void MainWindow::openClicked()
     ui->graphicsView->fitInView(m_scene->itemsBoundingRect(), Qt::KeepAspectRatio);
 }
 
-void MainWindow::saveClicked()
-{
+void MainWindow::saveClicked() {
     if (m_image->getLowresASCII().isEmpty()) {
-        errmsg->showMessage("Error! No ASCII generated");
+        QErrorMessage msg(this);
+        msg.showMessage("Error! No ASCII generated");
+        msg.exec();
         return;
     }
     const char filter[] = "All files(*.*)";
@@ -106,13 +99,14 @@ void MainWindow::saveClicked()
 
     QFile file(filename);
     if (!file.open(QIODevice::WriteOnly)) {
-        errmsg->showMessage("Error writing to file, try again");
+        QErrorMessage msg(this);
+        msg.showMessage("Error writing to file, try again");
+        msg.exec();
         return;
     }
     file.write(m_image->getLowresASCII().toUtf8());
 }
 
-void MainWindow::aboutQtClicked()
-{
+void MainWindow::aboutQtClicked() {
     QMessageBox::aboutQt(this);
 }
