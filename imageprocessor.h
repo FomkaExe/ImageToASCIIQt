@@ -2,7 +2,6 @@
 #define IMAGEPROCESSOR_H
 
 #include <QImage>
-#include <QObject>
 
 class ImageProcessor : public QImage {
 public:

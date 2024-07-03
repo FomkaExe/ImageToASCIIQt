@@ -7,6 +7,7 @@
 #include <QPixmap>
 #include <QErrorMessage>
 #include <QMessageBox>
+#include <QStandardPaths>
 
 
 MainWindow::MainWindow(QWidget *parent):
@@ -67,11 +68,18 @@ void MainWindow::fullscreenClicked() {
 }
 
 void MainWindow::openClicked() {
-    const char filter[] = "Image Files (*.png *.jpg *.jpeg *.bmp);;All files(*.*)";
-    QString name = QFileDialog::getOpenFileName(this,
-                                                tr("Open Image"),
-                                                "/home/fomka/Downloads",
-                                                tr(filter));
+    const char filter[] =
+            "Image Files (*.png *.jpg *.jpeg *.bmp *.webp);;All files(*.*)";
+
+    QString downloadDir =
+    QStandardPaths::standardLocations(QStandardPaths::DownloadLocation).last();
+
+    QString name =
+    QFileDialog::getOpenFileName(this,
+                                 tr("Open Image"),
+                                 downloadDir,
+                                 tr(filter));
+
     if (name.isNull()) {
         return;
     }
