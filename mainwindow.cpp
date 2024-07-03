@@ -24,11 +24,16 @@ MainWindow::MainWindow(QWidget *parent):
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    QObject::connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openClicked()));
-    QObject::connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveClicked()));
-    QObject::connect(ui->actionAbout_Qt, SIGNAL(triggered()), this, SLOT(aboutQtClicked()));
-    QObject::connect(ui->startButton, SIGNAL(clicked()), this, SLOT(startClicked()));
-    QObject::connect(ui->fullscreenButton, SIGNAL(clicked()), this, SLOT(fullscreenClicked()));
+    QObject::connect(ui->actionOpen, SIGNAL(triggered()),
+                     this, SLOT(openClicked()));
+    QObject::connect(ui->actionSave, SIGNAL(triggered()),
+                     this, SLOT(saveClicked()));
+    QObject::connect(ui->actionAbout_Qt, SIGNAL(triggered()),
+                     this, SLOT(aboutQtClicked()));
+    QObject::connect(ui->startButton, SIGNAL(clicked()),
+                     this, SLOT(startClicked()));
+    QObject::connect(ui->fullscreenButton, SIGNAL(clicked()),
+                     this, SLOT(fullscreenClicked()));
 }
 
 MainWindow::~MainWindow() {
@@ -40,7 +45,8 @@ MainWindow::~MainWindow() {
 
 void MainWindow::resizeEvent(QResizeEvent *event) {
     QMainWindow::resizeEvent(event);
-    ui->graphicsView->fitInView(m_scene->itemsBoundingRect(), Qt::KeepAspectRatio);
+    ui->graphicsView->fitInView(m_scene->itemsBoundingRect(),
+                                Qt::KeepAspectRatio);
 }
 
 void MainWindow::startClicked() {
@@ -89,7 +95,8 @@ void MainWindow::openClicked() {
     m_scene->clear();
     ui->textBrowser->clear();
     m_scene->addPixmap(QPixmap::fromImage(m_image->getImage()));
-    ui->graphicsView->fitInView(m_scene->itemsBoundingRect(), Qt::KeepAspectRatio);
+    ui->graphicsView->fitInView(m_scene->itemsBoundingRect(),
+                                Qt::KeepAspectRatio);
 }
 
 void MainWindow::saveClicked() {
