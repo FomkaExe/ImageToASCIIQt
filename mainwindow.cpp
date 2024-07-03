@@ -99,10 +99,14 @@ void MainWindow::saveClicked() {
         msg.exec();
         return;
     }
+
+    QString saveDir =
+    QStandardPaths::standardLocations(QStandardPaths::DownloadLocation).last();
+
     const char filter[] = "All files(*.*)";
     QString filename = QFileDialog::getSaveFileName(this,
                                                 tr("Save file"),
-                                                "/home",
+                                                saveDir,
                                                 tr(filter));
 
     QFile file(filename);
