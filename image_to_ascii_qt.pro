@@ -9,16 +9,16 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    imageprocessor.cpp \
-    main.cpp \
-    mainwindow.cpp
+    src/imageprocessor.cpp \
+    src/main.cpp \
+    src/mainwindow.cpp
 
 HEADERS += \
-    imageprocessor.h \
-    mainwindow.h
+    src/imageprocessor.h \
+    src/mainwindow.h
 
 FORMS += \
-    mainwindow.ui
+    src/mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
